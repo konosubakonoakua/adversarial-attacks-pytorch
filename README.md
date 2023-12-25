@@ -4,240 +4,146 @@
   <a href="https://github.com/Harry24k/adversarial-attacks-pytorch/blob/master/LICENSE"><img alt="MIT License" src="https://img.shields.io/github/license/Harry24k/adversarial-attacks-pytorch?&color=brightgreen" /></a>
   <a href="https://pypi.org/project/torchattacks/"><img alt="Pypi" src="https://img.shields.io/pypi/v/torchattacks.svg?&color=orange" /></a>
   <a href="https://github.com/Harry24k/adversarial-attacks-pytorch/releases"><img alt="Latest Release" src="https://img.shields.io/github/release/Harry24k/adversarial-attacks-pytorch.svg?&color=blue" /></a>
-  <a href="https://arxiv.org/abs/2010.01950"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2010.01950-f9f107.svg" /></a>
   <a href="https://adversarial-attacks-pytorch.readthedocs.io/en/latest/"><img alt="Documentation Status" src="https://readthedocs.org/projects/adversarial-attacks-pytorch/badge/?version=latest" /></a>
-  <a href="https://codecov.io/gh/Harry24k/adversarial-attacks-pytorch" > 
- <img src="https://codecov.io/gh/Harry24k/adversarial-attacks-pytorch/branch/master/graph/badge.svg?token=00CQ79UTC2"/> 
-  <a href="https://lgtm.com/projects/g/Harry24k/adversarial-attacks-pytorch/" > 
- <img src="https://img.shields.io/lgtm/grade/python/github/Harry24k/adversarial-attacks-pytorch?label=code%20quality"/> 
-  <a href="https://pepy.tech/project/torchattacks" > 
- <img src="https://img.shields.io/pypi/dm/torchattacks?color=red"/> 
- </a>
+    <a href="https://codecov.io/gh/Harry24k/adversarial-attacks-pytorch"><img src="https://codecov.io/gh/Harry24k/adversarial-attacks-pytorch/branch/master/graph/badge.svg?token=00CQ79UTC2"/></a>
+  <a href="https://lgtm.com/projects/g/Harry24k/adversarial-attacks-pytorch/"><img src="https://img.shields.io/pypi/dm/torchattacks?color=blue"/></a>
+  <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
-[Torchattacks](https://adversarial-attacks-pytorch.readthedocs.io/en/latest/index.html) is a PyTorch library that provides *adversarial attacks* to generate *adversarial examples*. It contains *PyTorch-like* interface and functions that make it easier for PyTorch users to implement adversarial attacks ([README [KOR]](https://github.com/Harry24k/adversairal-attacks-pytorch/blob/master/README_KOR.md)).
+<strong>Torchattacks  is a PyTorch library that provides adversarial attacks to generate adversarial examples.</strong> 
+
+It contains *PyTorch-like* interface and functions that make it easier for PyTorch users to implement adversarial attacks.
 
 
 ```python
 import torchattacks
 atk = torchattacks.PGD(model, eps=8/255, alpha=2/255, steps=4)
-# If, images are normalized:
+# If inputs were normalized, then
 # atk.set_normalization_used(mean=[...], std=[...])
 adv_images = atk(images, labels)
 ```
 
+**Additional Recommended Packages**.
+
+* [MAIR](https://github.com/Harry24k/MAIR): *Adversarial Trainining Framework, [NeurIPS'23 Main Track](https://neurips.cc/virtual/2023/poster/72546).*
+* [RobustBench](https://github.com/RobustBench/robustbench): *Adversarially Trained Models & Benchmarks, [NeurIPS'21 Datasets and Benchmarks Track](https://openreview.net/forum?id=SSKZPJCt7B).*
+
+**Citation.** If you use this package, please cite the following BibTex ([GoogleScholar](https://scholar.google.com/scholar?cluster=10203998516567946917&hl=ko&as_sdt=2005&sciodt=0,5)):
+
+```
+@article{kim2020torchattacks,
+title={Torchattacks: A pytorch repository for adversarial attacks},
+author={Kim, Hoki},
+journal={arXiv preprint arXiv:2010.01950},
+year={2020}
+}
+```
 
 
-## Table of Contents
+## :hammer: Requirements and Installation
 
-1. [Requirements and Installation](#Requirements-and-Installation)
-2. [Getting Started](#Getting-Started)
-3. [Performance Comparison](#Performance-Comparison)
-5. [Citation](#Citation)
-7. [Contribution](#Contribution)
-8. [Recommended Sites and Packages](#Recommended-Sites-and-Packages)
-
-
-
-## Requirements and Installation
-
-### :clipboard: Requirements
+**Requirements**
 
 - PyTorch version >=1.4.0
 - Python version >=3.6
 
-
-
-### :hammer: Installation from pip
+**Installation**
 
 ```
+#  pip
 pip install torchattacks
-```
 
-### :hammer: Installation from source (recommended)
-
-```
+#  source
 pip install git+https://github.com/Harry24k/adversarial-attacks-pytorch.git
-```
 
-or
-
-```
+#  git clone
 git clone https://github.com/Harry24k/adversarial-attacks-pytorch.git
 cd adversarial-attacks-pytorch/
 pip install -e .
 ```
 
+## :rocket:  Getting Started
 
-## Getting Started
+**Precautions**
 
-###  :warning: Precautions
 * **All models should return ONLY ONE vector of `(N, C)` where `C = number of classes`.** Considering most models in _torchvision.models_ return one vector of `(N,C)`, where `N` is the number of inputs and `C` is thenumber of classes, _torchattacks_ also only supports limited forms of output.  Please check the shape of the model’s output carefully. 
+* **The domain of inputs should be in the range of [0, 1]**. Since the clipping operation is always applied after the perturbation, the original inputs should have the range of [0, 1], which is the general settings in the vision domain.
 * **`torch.backends.cudnn.deterministic = True` to get same adversarial examples with fixed random seed**. Some operations are non-deterministic with float tensors on GPU [[discuss]](https://discuss.pytorch.org/t/inconsistent-gradient-values-for-the-same-input/26179). If you want to get same results with same inputs, please run `torch.backends.cudnn.deterministic = True`[[ref]](https://stackoverflow.com/questions/56354461/reproducibility-and-performance-in-pytorch).
 
 
 
-### :rocket: Demos
+**[Demos](https://github.com/Harry24k/adversarial-attacks-pytorch/blob/master/demo/White-box%20Attack%20on%20ImageNet.ipynb)**
 
-* **White-box Attack on CIFAR10** ([code](https://github.com/Harry24k/adversarial-attacks-pytorch/blob/master/demo/White-box%20Attack%20on%20CIFAR10.ipynb), [nbviewer](https://nbviewer.jupyter.org/github/Harry24k/adversarial-attacks-pytorch/blob/master/demo/White-box%20Attack%20on%20CIFAR10.ipynb))
-* **White-box Attack on ImageNet** ([code](https://github.com/Harry24k/adversarial-attacks-pytorch/blob/master/demo/White-box%20Attack%20on%20ImageNet.ipynb), [nbviewer](https://nbviewer.jupyter.org/github/Harry24k/adversarial-attacks-pytorch/blob/master/demo/White-box%20Attack%20on%20ImageNet.ipynb))
-* **Transfer Attack on CIFAR10** ([code](https://github.com/Harry24k/adversarial-attacks-pytorch/blob/master/demo/Transfer%20Attack%20on%20CIFAR10.ipynb), [nbviewer](https://nbviewer.jupyter.org/github/Harry24k/adversarial-attacks-pytorch/blob/master/demo/Transfer%20Attack%20on%20CIFAR10.ipynb))
-
-
-### Torchattacks supports following functions:
-
-**Targeted mode**
-
-* Random target label:
-```python
-# random labels as target labels.
-atk.set_mode_targeted_random()
-```
-
-* Least likely label:
-```python
-# label with the k-th smallest probability used as target labels.
-atk.set_mode_targeted_least_likely(kth_min)
-```
-
-* By custom function:
-```python
-# label from mapping function
-atk.set_mode_targeted_by_function(target_map_function=lambda images, labels:(labels+1)%10)
-```
-
-* By label:
-```python
-atk.set_mode_targeted_by_label(quiet=True)
-# shift all class loops one to the right, 1=>2, 2=>3, .., 9=>0
-target_labels = (labels + 1) % 10
-adv_images = atk(images, target_labels)
-```
-
-* Return to default:
-```python
-atk.set_mode_default()
-```
-
-**Save adversarial images**
-
-```python
-# Save
-atk.save(data_loader, save_path="./data.pt", verbose=True)
+* Targeted mode
   
-# Load
-adv_loader = atk.load(load_path="./data.pt")
-```
+    * Random target label
+        ```python
+        # random labels as target labels.
+        atk.set_mode_targeted_random()
+        ```
+    * Least likely label
+        ```python
+        # labels with the k-th smallest probability as target labels.
+        atk.set_mode_targeted_least_likely(kth_min)
+        ```
+    * By custom function
+        ```python
+        # labels obtained by mapping function as target labels.
+        # shift all class loops one to the right, 1=>2, 2=>3, .., 9=>0
+        atk.set_mode_targeted_by_function(target_map_function=lambda images, labels:(labels+1)%10)
+        ```
+    * By label
+        ```python
+        atk.set_mode_targeted_by_label(quiet=True)
+        # shift all class loops one to the right, 1=>2, 2=>3, .., 9=>0
+        target_labels = (labels + 1) % 10
+        adv_images = atk(images, target_labels)
+        ```
+    * Return to default
+        ```python
+        atk.set_mode_default()
+        ```
+    
+* Save adversarial images
+    ```python
+    # Save
+    atk.save(data_loader, save_path="./data.pt", verbose=True)
 
-**Training/Eval during attack**
+    # Load
+    adv_loader = atk.load(load_path="./data.pt")
+    ```
 
-```python
-# For RNN-based models, we cannot calculate gradients with eval mode.
-# Thus, it should be changed to the training mode during the attack.
-atk.set_training_mode(model_training=False, batchnorm_training=False, dropout_training=False)
-```
-
-
-**Make a set of attacks**
-
-* Strong attacks
-```python
-atk1 = torchattacks.FGSM(model, eps=8/255)
-atk2 = torchattacks.PGD(model, eps=8/255, alpha=2/255, iters=40, random_start=True)
-atk = torchattacks.MultiAttack([atk1, atk2])
-```
-
-* Binary search for CW
-```python
-atk1 = torchattacks.CW(model, c=0.1, steps=1000, lr=0.01)
-atk2 = torchattacks.CW(model, c=1, steps=1000, lr=0.01)
-atk = torchattacks.MultiAttack([atk1, atk2])
-```
-
-* Random restarts
-```python
-atk1 = torchattacks.PGD(model, eps=8/255, alpha=2/255, iters=40, random_start=True)
-atk2 = torchattacks.PGD(model, eps=8/255, alpha=2/255, iters=40, random_start=True)
-atk = torchattacks.MultiAttack([atk1, atk2])
-```
-
-
-
-### Torchattacks also supports collaboration with other attack packages.
-
-**FoolBox**
-
-https://github.com/bethgelab/foolbox
-
-```python
-from torchattacks.attack import Attack
-import foolbox as fb
-
-# L2BrendelBethge
-class L2BrendelBethge(Attack):
-    def __init__(self, model):
-        super(L2BrendelBethge, self).__init__("L2BrendelBethge", model)
-        self.fmodel = fb.PyTorchModel(self.model, bounds=(0,1), device=self.device)
-        self.init_attack = fb.attacks.DatasetAttack()
-        self.adversary = fb.attacks.L2BrendelBethgeAttack(init_attack=self.init_attack)
-        self._attack_mode = 'only_default'
-        
-    def forward(self, images, labels):
-        images, labels = images.to(self.device), labels.to(self.device)
-        
-        # DatasetAttack
-        batch_size = len(images)
-        batches = [(images[:batch_size//2], labels[:batch_size//2]),
-                   (images[batch_size//2:], labels[batch_size//2:])]
-        self.init_attack.feed(model=self.fmodel, inputs=batches[0][0]) # feed 1st batch of inputs
-        self.init_attack.feed(model=self.fmodel, inputs=batches[1][0]) # feed 2nd batch of inputs
-        criterion = fb.Misclassification(labels)
-        init_advs = self.init_attack.run(self.fmodel, images, criterion)
-        
-        # L2BrendelBethge
-        adv_images = self.adversary.run(self.fmodel, images, labels, starting_points=init_advs)
-        return adv_images
-
-atk = L2BrendelBethge(model)
-```
-
-**Adversarial-Robustness-Toolbox (ART)**
-
-https://github.com/IBM/adversarial-robustness-toolbox
+* Training/Eval during attack
+  
+    ```python
+    # For RNN-based models, we cannot calculate gradients with eval mode.
+    # Thus, it should be changed to the training mode during the attack.
+    atk.set_model_training_mode(model_training=False, batchnorm_training=False, dropout_training=False)
+    ```
+    
+* Make a set of attacks
+    * Strong attacks
+        ```python
+        atk1 = torchattacks.FGSM(model, eps=8/255)
+        atk2 = torchattacks.PGD(model, eps=8/255, alpha=2/255, iters=40, random_start=True)
+        atk = torchattacks.MultiAttack([atk1, atk2])
+        ```
+    * Binary search for CW
+        ```python
+        atk1 = torchattacks.CW(model, c=0.1, steps=1000, lr=0.01)
+        atk2 = torchattacks.CW(model, c=1, steps=1000, lr=0.01)
+        atk = torchattacks.MultiAttack([atk1, atk2])
+        ```
+    * Random restarts
+        ```python
+        atk1 = torchattacks.PGD(model, eps=8/255, alpha=2/255, iters=40, random_start=True)
+        atk2 = torchattacks.PGD(model, eps=8/255, alpha=2/255, iters=40, random_start=True)
+        atk = torchattacks.MultiAttack([atk1, atk2])
+        ```
 
 
-```python
-import torch.nn as nn
-import torch.optim as optim
 
-from torchattacks.attack import Attack
-
-import art.attacks.evasion as evasion
-from art.classifiers import PyTorchClassifier
-
-# SaliencyMapMethod (or Jacobian based saliency map attack)
-class JSMA(Attack):
-    def __init__(self, model, theta=1/255, gamma=0.15, batch_size=128):
-        super(JSMA, self).__init__("JSMA", model)
-        self.classifier = PyTorchClassifier(
-                            model=self.model, clip_values=(0, 1),
-                            loss=nn.CrossEntropyLoss(),
-                            optimizer=optim.Adam(self.model.parameters(), lr=0.01),
-                            input_shape=(1, 28, 28), nb_classes=10)
-        self.adversary = evasion.SaliencyMapMethod(classifier=self.classifier,
-                                                   theta=theta, gamma=gamma,
-                                                   batch_size=batch_size)
-        self.target_map_function = lambda labels: (labels+1)%10
-        self._attack_mode = 'only_default'
-        
-    def forward(self, images, labels):
-        adv_images = self.adversary.generate(images, self.target_map_function(labels))
-        return torch.tensor(adv_images).to(self.device)
-
-atk = JSMA(model)
-```
-
-### :fire: List of implemented papers
+## :page_with_curl: Supported Attacks
 
 The distance measure in parentheses.
 
@@ -276,13 +182,13 @@ The distance measure in parentheses.
 | **PIFGSM (PIM)**<br />(Linf) | Patch-wise Attack for Fooling Deep Neural Network ([Gao, Lianli, et al., 2020](https://arxiv.org/abs/2007.06765))                 | :heart_eyes: Contributor [Riko Naka](https://github.com/rikonaka)                               |
 | **PIFGSM++ (PIM++)**<br />(Linf) | Patch-wise++ Perturbation for Adversarial Targeted Attacks ([Gao, Lianli, et al., 2021](https://arxiv.org/abs/2012.15503))                 | :heart_eyes: Contributor [Riko Naka](https://github.com/rikonaka)                               |
 
-## Performance Comparison
 
-For a fair comparison, [Robustbench](https://github.com/RobustBench/robustbench) is used. As for the comparison packages, currently updated and the most cited methods were selected:
 
-* **Foolbox**: [505](https://scholar.google.com/scholar?q=Foolbox%3A%20A%20Python%20toolbox%20to%20benchmark%20the%20robustness%20of%20machine%20learning%20models.%20arXiv%202018) citations and last update 2022.10.
-* **ART**: [262](https://scholar.google.com/scholar?cluster=5391305326811305758&hl=ko&as_sdt=0,5&sciodt=0,5) citations and last update 2022.10.
-      
+## :bar_chart: Performance Comparison
+
+As for the comparison packages, currently updated and the most cited methods were selected:
+* **Foolbox**: [611](https://scholar.google.com/scholar?cites=10871007443931887615&as_sdt=2005&sciodt=0,5&hl=ko) citations and last update 2023.10.
+* **ART**: [467](https://scholar.google.com/scholar?cites=16247708270610532647&as_sdt=2005&sciodt=0,5&hl=ko) citations and last update 2023.10.
 
 Robust accuracy against each attack and elapsed time on the first 50 images of CIFAR10. For L2 attacks, the average L2 distances between adversarial images and the original images are recorded. All experiments were done on GeForce RTX 2080. For the latest version, please refer to here ([code](https://github.com/Harry24k/adversarial-attacks-pytorch/blob/master/demos/Performance%20Comparison%20(CIFAR10).ipynb), [nbviewer](https://nbviewer.jupyter.org/github/Harry24k/adversarial-attacks-pytorch/blob/master/demos/Performance%20Comparison%20(CIFAR10).ipynb)).
 
@@ -307,7 +213,7 @@ Robust accuracy against each attack and elapsed time on the first 50 images of C
 
 
 
-To push further, I introduce [**Rai-toolbox**](https://scholar.google.com/scholar_lookup?arxiv_id=2201.05647), which is newly added package!
+Additionally, I also recommend to use a recently proposed package, [**Rai-toolbox**](https://scholar.google.com/scholar_lookup?arxiv_id=2201.05647).
 
 | Attack      | Package      | Time/step (accuracy) |
 | ----------- | ------------ | -------------------- |
@@ -325,49 +231,3 @@ To push further, I introduce [**Rai-toolbox**](https://scholar.google.com/schola
 |             | ART          | 89 ms (70%)          |
 
 > The rai-toolbox takes a unique approach to gradient-based perturbations: they are implemented in terms of [parameter-transforming optimizers](https://mit-ll-responsible-ai.github.io/responsible-ai-toolbox/ref_optim.html) and [perturbation models](https://mit-ll-responsible-ai.github.io/responsible-ai-toolbox/ref_perturbation.html). This enables users to implement diverse algorithms (like [universal perturbations](https://mit-ll-responsible-ai.github.io/responsible-ai-toolbox/how_to/univ_adv_pert.html) and [concept probing with sparse gradients](https://mit-ll-responsible-ai.github.io/responsible-ai-toolbox/tutorials/ImageNet-Concept-Probing.html)) using the same paradigm as a standard PGD attack.
-
-
-
-## Citation
-If you use this package, please cite the following BibTex ([SemanticScholar](https://www.semanticscholar.org/paper/Torchattacks-%3A-A-Pytorch-Repository-for-Adversarial-Kim/1f4b3283faf534ef92d7d7fa798b26480605ead9), [GoogleScholar](https://scholar.google.com/scholar?cluster=10203998516567946917&hl=ko&as_sdt=2005&sciodt=0,5)):
-
-```
-@article{kim2020torchattacks,
-  title={Torchattacks: A pytorch repository for adversarial attacks},
-  author={Kim, Hoki},
-  journal={arXiv preprint arXiv:2010.01950},
-  year={2020}
-}
-```
-
-
-
-##  Recommended Sites and Packages
-
-* **Adversarial Attack Packages:**
-  
-    * [https://github.com/IBM/adversarial-robustness-toolbox](https://github.com/IBM/adversarial-robustness-toolbox): Adversarial attack and defense package made by IBM. **TensorFlow, Keras, Pytorch available.**
-    * [https://github.com/bethgelab/foolbox](https://github.com/bethgelab/foolbox): Adversarial attack package made by [Bethge Lab](http://bethgelab.org/). **TensorFlow, Pytorch available.**
-    * [https://github.com/tensorflow/cleverhans](https://github.com/tensorflow/cleverhans): Adversarial attack package made by Google Brain. **TensorFlow available.**
-    * [https://github.com/BorealisAI/advertorch](https://github.com/BorealisAI/advertorch): Adversarial attack package made by [BorealisAI](https://www.borealisai.com/en/). **Pytorch available.**
-    * [https://github.com/DSE-MSU/DeepRobust](https://github.com/DSE-MSU/DeepRobust): Adversarial attack (especially on GNN) package made by [BorealisAI](https://www.borealisai.com/en/). **Pytorch available.**
-    * https://github.com/fra31/auto-attack: Set of attacks that is believed to be the strongest in existence. **TensorFlow, Pytorch available.**
-    * https://github.com/mit-ll-responsible-ai/responsible-ai-toolbox/: PyTorch-centric tools for evaluating and enhancing both the robustness and the explainability of AI models. **Pytorch available.**
-    
-    
-    
-* **Adversarial Defense Leaderboard:**
-  
-    * [https://github.com/MadryLab/mnist_challenge](https://github.com/MadryLab/mnist_challenge)
-    * [https://github.com/MadryLab/cifar10_challenge](https://github.com/MadryLab/cifar10_challenge)
-    * [https://www.robust-ml.org/](https://www.robust-ml.org/)
-    * [https://robust.vision/benchmark/leaderboard/](https://robust.vision/benchmark/leaderboard/)
-    * https://github.com/RobustBench/robustbench
-    * https://github.com/Harry24k/adversarial-defenses-pytorch
-    
-    
-    
-* **Adversarial Attack and Defense Papers:**
-  
-    * https://nicholas.carlini.com/writing/2019/all-adversarial-example-papers.html: A Complete List of All (arXiv) Adversarial Example Papers made by Nicholas Carlini.
-    * https://github.com/chawins/Adversarial-Examples-Reading-List: Adversarial Examples Reading List made by Chawin Sitawarin.

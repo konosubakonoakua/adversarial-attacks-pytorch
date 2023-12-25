@@ -12,3 +12,10 @@ comment:
 ignore:
   - "robustbench"
   - "setup.py"
+
+coverage:
+  status:
+    project:
+      default: false
+    patch:
+      default: false

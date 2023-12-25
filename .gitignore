@@ -19,7 +19,10 @@ demo/_*
 demo/data/*
 demo/models/*
 demo/torchdefenses/*
+demo/robustbench/*
+demo/autoattack/*
 TODO.txt
 .vscode/
 coverage.xml
 .coverage
+black.ipynb
